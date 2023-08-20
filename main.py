@@ -92,7 +92,7 @@ class PatternAnalyzer:
                     g.edge(prev_node, curr_node)
 
             g.view()
-
+            # hola
         
             print("\nValores únicos con grupos:")
 
