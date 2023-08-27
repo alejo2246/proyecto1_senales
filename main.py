@@ -36,10 +36,8 @@ class PatternAnalyzer:
     
     def load_frequency_matrix(self):
         tree = ET.parse(self.filename)
-        root = tree.getroot()
-        
+        root = tree.getroot() 
         signals = root.findall("senal")
-        print(signals)
         patterns_matrix = []
         frequency_matrix = []
         read_signals=[]
@@ -61,7 +59,6 @@ class PatternAnalyzer:
         return read_signals
 
     def display_results(self):
-        print(self.all_signals)
         
         for signal in self.all_signals:
             g = graphviz.Digraph(format='png', filename=f'{signal.name}')
@@ -92,10 +89,7 @@ class PatternAnalyzer:
                     g.edge(prev_node, curr_node)
 
             g.view()
-            # hola
         
-            print("\nValores únicos con grupos:")
-
             g2 = graphviz.Digraph(format='png', filename=f'{signal.name} reducida')
             g2.edge(str(signal.name) + ' reducida', 'A=' + str(signal.A))
             reduced_matrix = []
@@ -105,7 +99,7 @@ class PatternAnalyzer:
                 sum_value = signal.row_sums[pattern]
                 row = [f"g={group} (t= {', '.join(map(str, indices))})"] + list(map(str, sum_value))
                 reduced_matrix.append(row)
-
+            print(reduced_matrix[0])
             # Create nodes for each element in the matrix
             for col_index in range(len(reduced_matrix[0])):
                 with g2.subgraph() as subg2:
@@ -129,18 +123,6 @@ class PatternAnalyzer:
                     g2.edge(prev_node, curr_node)
 
             g2.view()
-
-
-
-
-
-
-
-        
-
-
-
-
 
 def main():
     filename = "input.xml"
