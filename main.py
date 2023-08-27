@@ -11,6 +11,8 @@ class Signal:
         self.t=t
         self.A=A
         self.name= name
+        self.reduced_matrix, self.indexes=self.compute_pattern_matrix()
+        
 
     def compute_row_sums(self):
         row_sums = {}
@@ -23,6 +25,20 @@ class Signal:
     def compute_group_order(self):
         group_order = {pattern: i + 1 for i, pattern in enumerate(self.row_sums)}
         return group_order
+    def compute_pattern_matrix(self):
+        reduced_matrix=[]
+        indexes=[]
+
+        for pattern, group in self.group_order.items():
+            indices = [i + 1 for i, row in enumerate(self.patterns_matrix) if np.array_equal(row.flatten(), pattern)]
+            sum_value = self.row_sums[pattern]
+            print('grupo', group)
+            row = list(sum_value)
+            reduced_matrix.append(row)
+            indexes.append(indices)
+        
+        return reduced_matrix, indexes
+        
 
         
 class PatternAnalyzer:
@@ -56,7 +72,31 @@ class PatternAnalyzer:
             frequency_matrix = freq_matrix
             patterns_matrix = self.generate_pattern_matrix(frequency_matrix)
             read_signals.append(Signal(patterns_matrix,frequency_matrix,t,A,name))
+          
+      
+        
         return read_signals
+    
+    def save_results(self):
+        root = ET.Element("senalesReducidas")
+        for signal in self.all_signals:
+                # Create the 'senal' element
+            signal_xml = ET.SubElement(root, "senal", nombre=signal.name, A=str(signal.A))
+            
+            for local_t, row in enumerate(signal.reduced_matrix):
+                group_xml = ET.SubElement(signal_xml, "grupo", g=str(local_t+1))
+                times_xml = ET.SubElement(group_xml, "tiempos")
+
+                formatted_output = ','.join(map(str, signal.indexes[local_t]))
+                times_xml.text=formatted_output
+                group_data_xml=ET.SubElement(group_xml, "datosGrupo")
+                for local_A, value in enumerate(row):
+                    dato = ET.SubElement(group_data_xml, "dato", A=str(local_A+1))
+                    dato.text = str(value)
+        # Create the XML tree and write it to a file
+        tree = ET.ElementTree(root)
+        tree.write("output.xml", xml_declaration=True, encoding="utf-8", method="xml")
+
 
     def display_results(self):
         
@@ -66,6 +106,8 @@ class PatternAnalyzer:
             g.edge(str(signal.name), 't=' + str(signal.t))
             g.edge(str(signal.name), 'A=' + str(signal.A))
 
+            
+            
             # Create a subgraph for each column
             for col_index in range(len(signal.frequency_matrix[0])):
                 with g.subgraph() as subg:
@@ -80,7 +122,6 @@ class PatternAnalyzer:
                 subg.node(str(signal.name))
                 first_node = str(col_index) + '_0'
                 g.edge(str(signal.name), first_node)
-
             # Create edges between nodes within each column
             for col_index in range(len(signal.frequency_matrix[0])):
                 for row_index in range(1, len(signal.frequency_matrix)):
@@ -121,13 +162,13 @@ class PatternAnalyzer:
                     prev_node = str(row_index - 1) + '_' + str(col_index)
                     curr_node = str(row_index) + '_' + str(col_index)
                     g2.edge(prev_node, curr_node)
-
             g2.view()
 
 def main():
     filename = "input.xml"
     pattern_analyzer = PatternAnalyzer(filename)
-    pattern_analyzer.display_results()
+    #pattern_analyzer.display_results()
+    pattern_analyzer.save_results()
 
 if __name__ == "__main__":
     main()
