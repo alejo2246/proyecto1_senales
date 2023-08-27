@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<senalesReducidas>
+    <senal nombre="Prueba 1" A="4">
+        <grupo g="1">
+            <tiempos>1,3</tiempos>
+            <datosGrupo>
+                <dato A="1">5</dato>
+                <dato A="2">7</dato>
+                <dato A="3">0</dato>
+                <dato A="4">6</dato>
+            </datosGrupo>
+        </grupo>
+        <grupo g="2">
+            <tiempos>2,5</tiempos>
+            <datosGrupo>
+                <dato A="1">0</dato>
+                <dato A="2">0</dato>
+                <dato A="3">9</dato>
+                <dato A="4">4</dato>
+            </datosGrupo>
+        </grupo>
+        <grupo g="3">
+            <tiempos>4</tiempos>
+            <datosGrupo>
+                <dato A="1">1</dato>
+                <dato A="2">0</dato>
+                <dato A="3">1</dato>
+                <dato A="4">5</dato>
+            </datosGrupo>
+        </grupo>
+    </senal>
+</senalesReducidas>
